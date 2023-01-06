@@ -47,7 +47,7 @@ Messages are published to NATS (JetStream) at least once!
 ### Filter configuration example
 
 ```yaml
-databases:
+listener:
   filter:
     tables:
       users:
