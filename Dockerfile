@@ -20,7 +20,10 @@ RUN go mod verify
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o /app ./cmd/wal-listener
 
-FROM scratch
+FROM alpine
+
+# gettext for envsubst
+RUN apk add --no-cache gettext
 
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -30,5 +33,6 @@ COPY --from=builder /etc/group /etc/group
 COPY --from=builder /app .
 
 USER goof:goof
+RUN mkdir /etc/wal-listener && chown goof:goof /etc/wal-listener
 
-CMD ["./app"]
+CMD ["sh", "-c", "envsubst < /config-templates/wal-listener.yml > /etc/wal-listener/config.yml ; ./app"]
