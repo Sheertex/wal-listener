@@ -32,7 +32,8 @@ COPY --from=builder /etc/group /etc/group
 
 COPY --from=builder /app .
 
-USER goof:goof
 RUN mkdir /etc/wal-listener && chown goof:goof /etc/wal-listener
+
+USER goof:goof
 
 CMD ["sh", "-c", "envsubst < /config-templates/wal-listener.yml > /etc/wal-listener/config.yml ; ./app"]
